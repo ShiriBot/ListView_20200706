@@ -18,6 +18,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        미뤄둔 어댑터 객체화 실행
+        mAdapter = StudentAdapter(this,R.layout.student_list_item,mStudentList)
+
+//        완성된 어댑터를 리스트뷰와 연결
+        studentListView.adapter = mAdapter
+
+//        어댑터를 먼저 연결하고, 내용물 추가
         mStudentList.add(Student("조경진","서울시 은평구",1988))
         mStudentList.add(Student("김미희","서울시 중랑구",1995))
         mStudentList.add(Student("김재영","서울시 은평구",1986))
@@ -26,26 +33,32 @@ class MainActivity : AppCompatActivity() {
         mStudentList.add(Student("조장우","서울시 종로구",1983))
         mStudentList.add(Student("채정실","서울시 용산구",1991))
 
-//        미뤄둔 어댑터 객체화 실행
-        mAdapter = StudentAdapter(this,R.layout.student_list_item,mStudentList)
-
-//        완성된 어댑터를 리스트뷰와 연결
-        studentListView.adapter = mAdapter
+//        어댑터에게 새로고침 시키기
+        mAdapter.notifyDataSetChanged()
 
         studentListView.setOnItemClickListener { parent, view, position, id ->
 
 //            각 줄을 누르면 눌린 사람의 이름을 토스트로
 //            눌린 사람이 누군지?
-
             val clickedUser = mStudentList[position]
 
 //            토스트로 눌린 사람 이름
             Toast.makeText(this,clickedUser.name, Toast.LENGTH_SHORT).show()
-
-
-
         }
 
+//        학생목록 롱클릭 이벤트 처리
+
+        studentListView.setOnItemLongClickListener { parent, view, position, id ->
+
+//            오래 눌린 사람을 명단에서 삭제.
+            mStudentList.removeAt(position)
+
+//            어댑터에게 새로고침시키기
+            mAdapter.notifyDataSetChanged()
+
+//            LongClick은 반드시 Boolean값을 리턴해줘야 함.
+            return@setOnItemLongClickListener true
+        }
 
     }
 }
